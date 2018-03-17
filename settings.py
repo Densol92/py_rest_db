@@ -1,0 +1,1 @@
+URI = 'sqlite::memory'
