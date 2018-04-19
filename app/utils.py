@@ -16,7 +16,7 @@ def add_timestamp(records):
 
 def check_auth(**kwargs):
     auth_table = get_table('tech', 'auth')
-    return auth_table.find(**kwargs)
+    return [row for row in auth_table.find(**kwargs)]
 
 
 def get_table(schema, table_name):
@@ -29,9 +29,11 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
-        schema = auth.username
+
         if not auth or not check_auth(login=auth.username, password=auth.password):
             schema = 'test'
+        else:
+            schema = auth.username
         return f(*args, **kwargs, schema=schema)
 
     return decorated

@@ -5,7 +5,8 @@ from flask import Flask, jsonify
 from flask import request
 from datetime import datetime
 
-from utils import get_table, add_timestamp, check_auth, requires_auth
+from utils import get_table, add_timestamp, check_auth, requires_auth, create_schema
+
 
 app = Flask(__name__)
 
@@ -61,10 +62,10 @@ def register():
     existed = check_auth(login=login)
     if not existed:
         existed = {'login': login, 'password': ''.join(random.choice(string.ascii_letters) for _ in range(10))}
-
+        create_schema(login)
         auth_table.insert(existed)
     else:
-        existed = [row for row in existed][0]
+        existed = existed[0]
     return jsonify(existed)
 
 
